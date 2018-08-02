@@ -14,5 +14,10 @@ int main(int argc, char* argv[])
     test.LoadTestData(dataFile);
     test.RunTest();
 
+    /// visualize the original clip
+    glutInit(&argc, argv);
+    test.initWindow(1280, 700, "Biped");
+    glutMainLoop();
+
     return 0;
 }

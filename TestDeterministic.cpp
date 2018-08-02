@@ -86,6 +86,14 @@ void TestDeterministic::InitEnv()
     }
     mWorld->addSkeleton(floor);
     mWorld->addSkeleton(mBiped);
+    setWorld(mWorld);
+
+    auto translation = mWorld->getSkeleton("biped")->getBodyNode(0)->getTransform().translation();
+    mEye = Eigen::Vector3d(3.0 + translation[0], translation[1], 3.0 + translation[2]);
+    auto dir = mEye - Eigen::Vector3d(0.0, 1.0, 0.0);
+    Eigen::Vector3d normal(dir[2], 0, -dir[0]);
+    mUp = dir.cross(normal).normalized();
+
     mController = std::make_shared<Controller>(mBiped);
 }
 
@@ -230,4 +238,20 @@ void TestDeterministic::RunTest()
 
     if(passAll)
         cout << "pass all tests." << endl;
+}
+
+void TestDeterministic::InitMotion()
+{
+    mBiped->setPositions(mPoses[0]);
+    mBiped->setVelocities(mVels[0]);
+}
+
+void TestDeterministic::timeStepping()
+{
+    double time = mWorld->getTime();
+    int frame_id = static_cast<int>(time * fps) % mPoses.size();
+    mBiped->setPositions(mPoses[frame_id]);
+    mBiped->setVelocities(mVels[frame_id]);
+
+    SimWindow::timeStepping();
 }

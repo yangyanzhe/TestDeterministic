@@ -29,13 +29,14 @@ public:
     }
 };
 
-class TestDeterministic
+class TestDeterministic : public dart::gui::SimWindow
 {
 private:
     dart::simulation::WorldPtr mWorld;
     dart::dynamics::SkeletonPtr mBiped;
     std::shared_ptr<Controller> mController;
 
+    double fps = 30.0;
     std::vector<Eigen::VectorXd> mPoses;
     std::vector<Eigen::VectorXd> mVels;
     std::vector<Eigen::VectorXd> mTargets;
@@ -57,6 +58,9 @@ public:
     void InitEnv();
     void LoadTestData(const char* filename);
     void RunTest();
+
+    void InitMotion();
+    void timeStepping() override;
 };
 
 #endif //DETERMINISTIC_TESTDETERMINISTIC_H
